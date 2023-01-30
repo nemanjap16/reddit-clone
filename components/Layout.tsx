@@ -1,4 +1,3 @@
-import { LayoutProps } from "framer-motion";
 import React from "react";
 import Navbar from "./Navbar";
 
