@@ -1,44 +1,63 @@
 import React from "react";
+import { useRecoilState } from "recoil";
+import { authModalState } from "@/atoms/authModalAtom";
 import {
-  Button,
+  Flex,
   Modal,
   ModalBody,
   ModalCloseButton,
   ModalContent,
-  ModalFooter,
   ModalHeader,
   ModalOverlay,
-  useDisclosure,
+  Text,
 } from "@chakra-ui/react";
+import AuthInputs from "./AuthInputs";
+import OAuthButtons from "./OAuthButtons";
 
 type AuthModalProps = {
   //
 };
 
 const AuthModal: React.FC<AuthModalProps> = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [modalState, setModalState] = useRecoilState(authModalState);
+  const handleCloseModal = () => {
+    setModalState((prev) => ({
+      ...prev,
+      open: false,
+    }));
+  };
   return (
     <>
-      <Button onClick={onOpen}>Open Modal</Button>
-
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={modalState.open} onClose={handleCloseModal}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Modal Title</ModalHeader>
+          <ModalHeader textAlign="center">
+            {modalState.view === "signin" && "Sign In"}
+            {modalState.view === "signup" && "Sign Up"}
+            {modalState.view === "resetPassword" && "Reset Password"}
+          </ModalHeader>
           <ModalCloseButton />
-          <ModalBody>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Laboriosam deleniti illo sunt rem, repellendus minus!
-            </p>
+          <ModalBody
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+            pb={6}
+          >
+            <Flex
+              flexDirection="column"
+              alignItems="center"
+              justifyItems="center"
+              width="70%"
+            >
+              <OAuthButtons />
+              <Text color="gray.500" fontWeight={700} mt={4}>
+                OR
+              </Text>
+              <AuthInputs />
+              {/* <ResetPassword /> */}
+            </Flex>
           </ModalBody>
-
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Close
-            </Button>
-            <Button variant="ghost">Secondary Action</Button>
-          </ModalFooter>
         </ModalContent>
       </Modal>
     </>
